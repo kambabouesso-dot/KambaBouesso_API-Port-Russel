@@ -3,8 +3,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
+var mongo = require('./db/mongo');
+var runtimePort = process.env.PORT || '3000';
+
+if (!process.env.URL_MONGO) {
+    console.warn('[Config] URL_MONGO absente: la connexion MongoDB va echouer.');
+}
+
+console.log('[Config] Demarrage avec PORT=' + runtimePort + ' API_URL=' + (process.env.API_URL || '(absente)'));
+
+// Connexion MongoDB en arrière-plan (ne bloque pas le démarrage)
+mongo.initClientDbConnection().catch(err => {
+    console.error('Avertissement: Connexion MongoDB echouee', mongo.getSafeMongoErrorMessage(err));
+});
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -24,7 +38,12 @@ app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    res.status(404).json({
+        name:'mon application', 
+        version:'1.0', 
+        status: 404, 
+        message: 'Ressource non trouvée' 
+    });
 });
 
 // error handler
