@@ -22,6 +22,7 @@ exports.login = async (req, res) => {
 
     const jwtSecret = process.env.JWT_SECRET;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '2h';
+    const jwtAudience = process.env.JWT_AUDIENCE;
 
     if (!jwtSecret) {
         return res.status(500).json({
@@ -60,10 +61,16 @@ exports.login = async (req, res) => {
             name: user.name
         };
 
-        const token = jwt.sign(tokenPayload, jwtSecret, {
+        const signOptions = {
             expiresIn: jwtExpiresIn,
             issuer: process.env.APP_NAME || 'mon_application'
-        });
+        };
+
+        if (jwtAudience) {
+            signOptions.audience = jwtAudience;
+        }
+
+        const token = jwt.sign(tokenPayload, jwtSecret, signOptions);
 
         return res.status(200).json({
             token,

@@ -13,6 +13,8 @@ module.exports = (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
     const secret = process.env.JWT_SECRET;
+    const issuer = process.env.APP_NAME || 'mon_application';
+    const audience = process.env.JWT_AUDIENCE;
 
     if (!secret) {
         return res.status(500).json({
@@ -24,7 +26,15 @@ module.exports = (req, res, next) => {
 
     try {
         // Le payload decode est conserve pour un controle d'acces ulterieur.
-        const decoded = jwt.verify(token, secret);
+        const verifyOptions = {
+            issuer
+        };
+
+        if (audience) {
+            verifyOptions.audience = audience;
+        }
+
+        const decoded = jwt.verify(token, secret, verifyOptions);
         req.auth = decoded;
         return next();
     } catch (error) {
