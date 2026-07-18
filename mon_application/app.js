@@ -8,6 +8,7 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var catwaysRouter = require('./routes/catways');
+var reservationsRouter = require('./routes/reservations');
 var mongo = require('./db/mongo');
 var runtimePort = process.env.PORT || '3000';
 
@@ -43,6 +44,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/catways', catwaysRouter);
+app.use('/reservations', reservationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
