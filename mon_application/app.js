@@ -6,11 +6,16 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 var mongo = require('./db/mongo');
 var runtimePort = process.env.PORT || '3000';
 
 if (!process.env.URL_MONGO) {
     console.warn('[Config] URL_MONGO absente: la connexion MongoDB va echouer.');
+}
+
+if (!process.env.JWT_SECRET) {
+    console.warn('[Config] JWT_SECRET absente: le login/token ne fonctionnera pas.');
 }
 
 console.log('[Config] Demarrage avec PORT=' + runtimePort + ' API_URL=' + (process.env.API_URL || '(absente)'));
@@ -34,6 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
