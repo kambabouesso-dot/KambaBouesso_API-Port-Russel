@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tableau de bord - Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body data-page="dashboard">
+  <main class="page page-shell">
+    <aside class="sidebar">
+      <p class="kicker">Port Russel</p>
+      <h1>Tableau de bord</h1>
+      <nav class="side-nav">
+        <a class="nav-link is-active" href="/dashboard.html">Tableau de bord</a>
+        <a class="nav-link" href="/users.html">Utilisateurs</a>
+        <a class="nav-link" href="/catways.html">Catways</a>
+        <a class="nav-link" href="/reservations.html">Reservations</a>
+        <a class="nav-link" href="/documentation.html">Documentation API</a>
+      </nav>
+      <button id="logoutButton" class="danger-button" type="button">Se deconnecter</button>
+    </aside>
+
+    <section class="content-stack">
+      <header class="hero compact">
+        <p class="kicker">Administration</p>
+        <h2>Vue globale</h2>
+        <p class="subtitle">Suivi de la session et reservations en cours.</p>
+      </header>
+
+      <section class="card stats-grid">
+        <article class="stat-box">
+          <span class="stat-label">Utilisateur connecte</span>
+          <strong id="dashboardUserEmail">-</strong>
+        </article>
+        <article class="stat-box">
+          <span class="stat-label">Date du jour</span>
+          <strong id="dashboardToday">-</strong>
+        </article>
+        <article class="stat-box">
+          <span class="stat-label">Etat session</span>
+          <strong id="authStatus">Non connecte</strong>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>Reservations en cours</h2>
+            <p class="note">Reservations dont la periode contient la date actuelle.</p>
+          </div>
+          <button id="refreshDashboardButton" class="ghost-button" type="button">Actualiser</button>
+        </div>
+        <p id="globalMessage" class="flash" aria-live="polite"></p>
+        <div id="ongoingReservationsList" class="entity-list"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
+</body>
+</html>

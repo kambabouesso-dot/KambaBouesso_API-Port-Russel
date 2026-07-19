@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Utilisateurs - Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body data-page="users">
+  <main class="page page-shell">
+    <aside class="sidebar">
+      <p class="kicker">Port Russel</p>
+      <h1>Utilisateurs</h1>
+      <nav class="side-nav">
+        <a class="nav-link" href="/dashboard.html">Tableau de bord</a>
+        <a class="nav-link is-active" href="/users.html">Utilisateurs</a>
+        <a class="nav-link" href="/catways.html">Catways</a>
+        <a class="nav-link" href="/reservations.html">Reservations</a>
+        <a class="nav-link" href="/documentation.html">Documentation API</a>
+      </nav>
+      <button id="logoutButton" class="danger-button" type="button">Se deconnecter</button>
+    </aside>
+
+    <section class="content-stack">
+      <header class="hero compact">
+        <p class="kicker">CRUD</p>
+        <h2>Gestion des utilisateurs</h2>
+        <p class="subtitle">Creation publique, edition et suppression apres authentification.</p>
+      </header>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>Operations</h2>
+            <p class="note">Utilise l'identifiant MongoDB pour l'edition et la suppression.</p>
+          </div>
+          <button id="refreshUsersButton" class="ghost-button" type="button">Actualiser</button>
+        </div>
+        <p id="globalMessage" class="flash" aria-live="polite"></p>
+        <div class="grid two-col">
+          <form id="createUserForm" class="panel form-stack">
+            <h3>Creer un utilisateur</h3>
+            <label>Nom<input name="name" type="text" required /></label>
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Mot de passe<input name="password" type="password" required /></label>
+            <button type="submit">Creer</button>
+          </form>
+          <form id="updateUserForm" class="panel form-stack">
+            <h3>Modifier un utilisateur</h3>
+            <label>ID utilisateur<input name="id" type="text" placeholder="_id MongoDB" required /></label>
+            <label>Nom<input name="name" type="text" /></label>
+            <label>Email<input name="email" type="email" /></label>
+            <label>Mot de passe<input name="password" type="password" /></label>
+            <button type="submit">Mettre a jour</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Liste des utilisateurs</h2>
+        <div id="usersList" class="entity-list"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catways - Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body data-page="catways">
+  <main class="page page-shell">
+    <aside class="sidebar">
+      <p class="kicker">Port Russel</p>
+      <h1>Catways</h1>
+      <nav class="side-nav">
+        <a class="nav-link" href="/dashboard.html">Tableau de bord</a>
+        <a class="nav-link" href="/users.html">Utilisateurs</a>
+        <a class="nav-link is-active" href="/catways.html">Catways</a>
+        <a class="nav-link" href="/reservations.html">Reservations</a>
+        <a class="nav-link" href="/documentation.html">Documentation API</a>
+      </nav>
+      <button id="logoutButton" class="danger-button" type="button">Se deconnecter</button>
+    </aside>
+
+    <section class="content-stack">
+      <header class="hero compact">
+        <p class="kicker">CRUD</p>
+        <h2>Gestion des catways</h2>
+        <p class="subtitle">Consultation et administration des pontons du port.</p>
+      </header>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>Operations</h2>
+            <p class="note">Le numero du catway identifie la ressource.</p>
+          </div>
+          <button id="refreshCatwaysButton" class="ghost-button" type="button">Actualiser</button>
+        </div>
+        <p id="globalMessage" class="flash" aria-live="polite"></p>
+        <div class="grid two-col">
+          <form id="createCatwayForm" class="panel form-stack">
+            <h3>Creer un catway</h3>
+            <label>Numero<input name="catwayNumber" type="number" min="1" required /></label>
+            <label>Type
+              <select name="catwayType" required>
+                <option value="short">short</option>
+                <option value="long">long</option>
+              </select>
+            </label>
+            <label>Etat<textarea name="catwayState" rows="3" required></textarea></label>
+            <button type="submit">Creer</button>
+          </form>
+          <form id="updateCatwayForm" class="panel form-stack">
+            <h3>Modifier un catway</h3>
+            <label>Numero du catway<input name="catwayNumber" type="number" min="1" required /></label>
+            <label>Type
+              <select name="catwayType">
+                <option value="">Ne pas changer</option>
+                <option value="short">short</option>
+                <option value="long">long</option>
+              </select>
+            </label>
+            <label>Etat<textarea name="catwayState" rows="3"></textarea></label>
+            <button type="submit">Mettre a jour</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Liste des catways</h2>
+        <div id="catwaysList" class="entity-list"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation API - Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body data-page="documentation">
+  <main class="page page-shell">
+    <aside class="sidebar">
+      <p class="kicker">Port Russel</p>
+      <h1>Documentation API</h1>
+      <nav class="side-nav">
+        <a class="nav-link" href="/dashboard.html">Tableau de bord</a>
+        <a class="nav-link" href="/users.html">Utilisateurs</a>
+        <a class="nav-link" href="/catways.html">Catways</a>
+        <a class="nav-link" href="/reservations.html">Reservations</a>
+        <a class="nav-link is-active" href="/documentation.html">Documentation API</a>
+      </nav>
+      <button id="logoutButton" class="danger-button" type="button">Se deconnecter</button>
+    </aside>
+
+    <section class="content-stack">
+      <header class="hero compact">
+        <p class="kicker">Reference</p>
+        <h2>Documentation rapide</h2>
+        <p class="subtitle">Synthese des routes, des commandes et du flux de verification.</p>
+      </header>
+
+      <section class="card">
+        <h2>Demarrage</h2>
+        <pre><code>npm install
+npm run seed:all
+npm run dev</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>Routes publiques</h2>
+        <div class="chips">
+          <span>GET /</span>
+          <span>POST /users</span>
+          <span>POST /auth/login</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Routes protegees</h2>
+        <div class="chips">
+          <span>GET /users</span>
+          <span>GET /catways</span>
+          <span>POST /catways</span>
+          <span>GET /reservations</span>
+          <span>POST /reservations</span>
+          <span>PUT /reservations/:id</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Tests automatiques</h2>
+        <pre><code>npm run test:api:phase7
+npm run test:api:phase7:with-seed</code></pre>
+      </section>
+
+      <section class="card warning">
+        <h2>Points d'attention</h2>
+        <ul>
+          <li>Configurer un vrai JWT_SECRET avant livraison.</li>
+          <li>Verifier la whitelist IP MongoDB Atlas si la connexion echoue.</li>
+          <li>Utiliser le token Bearer sur toutes les pages protegee.</li>
+        </ul>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
+</body>
+</html>
