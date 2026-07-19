@@ -1,0 +1,597 @@
+{
+  "info": {
+    "name": "API Port Russel - Phase 7 (Full API Tests)",
+    "description": "Recette complete API: auth, users, catways, reservations avec cas nominaux et negatifs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Auth & Users",
+      "item": [
+        {
+          "name": "01.1 Create user (public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{testUserName}}\",\n  \"email\": \"{{testUserEmail}}\",\n  \"password\": \"{{testUserPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const unique = Date.now();",
+                  "pm.environment.set('testUserEmail', `phase7_${unique}@mail.com`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "pm.environment.set('createdUserId', jsonData._id);",
+                  "pm.environment.set('loginEmail', pm.environment.get('testUserEmail'));",
+                  "pm.environment.set('loginPassword', pm.environment.get('testUserPassword'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.2 Login (success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"{{loginPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "pm.expect(jsonData).to.have.property('token');",
+                  "pm.environment.set('token', jsonData.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.3 Users list without token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Catways",
+      "item": [
+        {
+          "name": "02.1 List catways (token)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catways",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catways"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array', function () {",
+                  "  pm.expect(Array.isArray(pm.response.json())).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.2 Create catway",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catwayNumber\": {{newCatwayNumber}},\n  \"catwayType\": \"short\",\n  \"catwayState\": \"bon etat\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/catways",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catways"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('newCatwayNumber')) {",
+                  "  pm.environment.set('newCatwayNumber', String(500 + Math.floor(Math.random() * 400)));",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "pm.expect(jsonData.catwayNumber).to.eql(Number(pm.environment.get('newCatwayNumber')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.3 Duplicate catway create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catwayNumber\": {{newCatwayNumber}},\n  \"catwayType\": \"short\",\n  \"catwayState\": \"etat doublon\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/catways",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catways"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 409', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Reservations",
+      "item": [
+        {
+          "name": "03.1 Create reservation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catwayNumber\": {{newCatwayNumber}},\n  \"clientName\": \"{{reservationClientName}}\",\n  \"boatName\": \"{{reservationBoatName}}\",\n  \"startDate\": \"{{reservationStartDate}}\",\n  \"endDate\": \"{{reservationEndDate}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "pm.environment.set('createdReservationId', jsonData._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.2 Overlap reservation rejected",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catwayNumber\": {{newCatwayNumber}},\n  \"clientName\": \"Overlap Client\",\n  \"boatName\": \"Overlap Boat\",\n  \"startDate\": \"{{reservationStartDate}}\",\n  \"endDate\": \"{{reservationEndDate}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 409', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.3 Get reservations by catway",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/catway/{{newCatwayNumber}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "catway",
+                "{{newCatwayNumber}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const list = pm.response.json();",
+                  "pm.test('Contains created reservation', function () {",
+                  "  const createdId = pm.environment.get('createdReservationId');",
+                  "  pm.expect(list.some(item => item._id === createdId)).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.4 Update reservation dates",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"{{reservationUpdateStartDate}}\",\n  \"endDate\": \"{{reservationUpdateEndDate}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations/{{createdReservationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{createdReservationId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "pm.expect(jsonData._id).to.eql(pm.environment.get('createdReservationId'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.5 Delete reservation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/{{createdReservationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{createdReservationId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.6 Delete catway created for tests",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catways/{{newCatwayNumber}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catways",
+                "{{newCatwayNumber}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.environment.get('testUserName')) { pm.environment.set('testUserName', 'Phase7 Tester'); }",
+          "if (!pm.environment.get('testUserPassword')) { pm.environment.set('testUserPassword', 'TestPass123!'); }",
+          "if (!pm.environment.get('reservationClientName')) { pm.environment.set('reservationClientName', 'Client Phase7'); }",
+          "if (!pm.environment.get('reservationBoatName')) { pm.environment.set('reservationBoatName', 'Boat Phase7'); }",
+          "if (!pm.environment.get('reservationStartDate')) { pm.environment.set('reservationStartDate', '2026-09-01T06:00:00.000Z'); }",
+          "if (!pm.environment.get('reservationEndDate')) { pm.environment.set('reservationEndDate', '2026-09-10T06:00:00.000Z'); }",
+          "if (!pm.environment.get('reservationUpdateStartDate')) { pm.environment.set('reservationUpdateStartDate', '2026-09-11T06:00:00.000Z'); }",
+          "if (!pm.environment.get('reservationUpdateEndDate')) { pm.environment.set('reservationUpdateEndDate', '2026-09-20T06:00:00.000Z'); }"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    }
+  ]
+}

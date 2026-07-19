@@ -5,9 +5,15 @@
   "scripts": {
     "start": "env-cmd -f ./env/.env nodemon ./bin/www",
     "dev": "env-cmd -f ./env/.env.dev nodemon ./bin/www",
-    "prod": "env-cmd -f ./env/.env.prod nodemon ./bin/www"
+    "prod": "env-cmd -f ./env/.env.prod nodemon ./bin/www",
+    "seed:all": "env-cmd -f ./env/.env.dev node ./scripts/seed.js",
+    "seed:catways": "env-cmd -f ./env/.env.dev node ./scripts/seed.js --catways",
+    "seed:reservations": "env-cmd -f ./env/.env.dev node ./scripts/seed.js --reservations",
+    "test:api:phase7": "npx newman run ./postman/Api-Port-Russel-Phase7.postman_collection.json -e ./postman/Api-Port-Russel-Phase7.postman_environment.json",
+    "test:api:phase7:with-seed": "npm run seed:all && npm run test:api:phase7"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.6",
     "debug": "~2.6.9",
@@ -15,11 +21,11 @@
     "express": "^4.22.2",
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
     "morgan": "^1.11.0"
   },
   "devDependencies": {
-    "bcrypt": "^6.0.0",
     "nodemon": "^3.1.14"
   },
   "allowScripts": {

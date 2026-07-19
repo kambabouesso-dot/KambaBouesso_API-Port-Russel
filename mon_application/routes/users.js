@@ -7,9 +7,14 @@ var router = express.Router();
 });*/
 
 const service = require('../services/users');
+const auth = require('../middlewares/auth');
+
+router.post('/', service.create);
+
+// Les operations de lecture/modification/suppression exigent un token valide.
+router.use(auth);
 router.get('/', service.getAll);
 router.get('/:id', service.getById);
-router.post('/', service.create);
 router.put('/:id', service.update);
 router.delete('/:id', service.delete);
 
