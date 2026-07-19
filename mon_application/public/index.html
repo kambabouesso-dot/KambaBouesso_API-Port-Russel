@@ -1,13 +1,51 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Port Russel Admin</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
 </head>
+<body data-page="home">
+  <main class="page landing-page">
+    <header class="hero home-hero">
+      <p class="kicker">API Port Russel</p>
+      <h1>Bienvenue sur l'interface d'administration</h1>
+      <p class="subtitle">Cette application permet de piloter les utilisateurs, les catways et les reservations du port depuis une interface web connectee a MongoDB.</p>
+      <div class="hero-actions">
+        <a class="hero-link" href="/documentation.html">Voir la documentation API</a>
+      </div>
+    </header>
 
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+    <section class="grid two-col">
+      <article class="card">
+        <h2>Fonctionnalites</h2>
+        <ul>
+          <li>Authentification JWT avec redirection vers le tableau de bord</li>
+          <li>CRUD utilisateurs, catways et reservations</li>
+          <li>Consultation des reservations en cours</li>
+          <li>Acces rapide a la documentation et aux pages de gestion</li>
+        </ul>
+      </article>
+
+      <section class="card">
+        <h2>Connexion</h2>
+        <p class="note">Une connexion reussie vous redirige automatiquement vers le tableau de bord.</p>
+        <form id="loginForm" class="form-stack">
+          <label>
+            Email
+            <input id="loginEmail" name="email" type="email" placeholder="admin@mail.com" required />
+          </label>
+          <label>
+            Mot de passe
+            <input id="loginPassword" name="password" type="password" placeholder="mot de passe" required />
+          </label>
+          <button type="submit">Se connecter</button>
+        </form>
+        <p id="globalMessage" class="flash" aria-live="polite"></p>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservations - Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body data-page="reservations">
+  <main class="page page-shell">
+    <aside class="sidebar">
+      <p class="kicker">Port Russel</p>
+      <h1>Reservations</h1>
+      <nav class="side-nav">
+        <a class="nav-link" href="/dashboard.html">Tableau de bord</a>
+        <a class="nav-link" href="/users.html">Utilisateurs</a>
+        <a class="nav-link" href="/catways.html">Catways</a>
+        <a class="nav-link is-active" href="/reservations.html">Reservations</a>
+        <a class="nav-link" href="/documentation.html">Documentation API</a>
+      </nav>
+      <button id="logoutButton" class="danger-button" type="button">Se deconnecter</button>
+    </aside>
+
+    <section class="content-stack">
+      <header class="hero compact">
+        <p class="kicker">CRUD</p>
+        <h2>Gestion des reservations</h2>
+        <p class="subtitle">Suivi des sejours, filtrage par catway et controle des chevauchements.</p>
+      </header>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>Operations</h2>
+            <p class="note">Les dates sont exprimees en heure locale du navigateur.</p>
+          </div>
+          <div class="toolbar">
+            <input id="reservationCatwayFilter" type="number" min="1" placeholder="Filtrer par catway" />
+            <button id="refreshReservationsButton" class="ghost-button" type="button">Actualiser</button>
+          </div>
+        </div>
+        <p id="globalMessage" class="flash" aria-live="polite"></p>
+        <div class="grid two-col">
+          <form id="createReservationForm" class="panel form-stack">
+            <h3>Creer une reservation</h3>
+            <label>Numero de catway<input name="catwayNumber" type="number" min="1" required /></label>
+            <label>Client<input name="clientName" type="text" required /></label>
+            <label>Bateau<input name="boatName" type="text" required /></label>
+            <label>Date debut<input name="startDate" type="datetime-local" required /></label>
+            <label>Date fin<input name="endDate" type="datetime-local" required /></label>
+            <button type="submit">Creer</button>
+          </form>
+          <form id="updateReservationForm" class="panel form-stack">
+            <h3>Modifier une reservation</h3>
+            <label>ID reservation<input name="id" type="text" required /></label>
+            <label>Numero de catway<input name="catwayNumber" type="number" min="1" /></label>
+            <label>Client<input name="clientName" type="text" /></label>
+            <label>Bateau<input name="boatName" type="text" /></label>
+            <label>Date debut<input name="startDate" type="datetime-local" /></label>
+            <label>Date fin<input name="endDate" type="datetime-local" /></label>
+            <button type="submit">Mettre a jour</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Liste des reservations</h2>
+        <div id="reservationsList" class="entity-list"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/javascripts/livrable.js"></script>
+</body>
+</html>
