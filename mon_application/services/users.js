@@ -15,7 +15,16 @@ function sanitizeUser(userDoc) {
     return user;
 }
 
-function getAllowedUpdatePayload(body) {
+function normalizeRole(value) {
+    if (typeof value !== 'string') {
+        return null;
+    }
+
+    const role = value.trim().toLowerCase();
+    return ['user', 'admin'].includes(role) ? role : null;
+}
+
+function getAllowedUpdatePayload(body, isAdmin) {
     const payload = {};
     const allowedFields = ['name', 'email', 'password'];
 
@@ -29,6 +38,13 @@ function getAllowedUpdatePayload(body) {
 
     if (payload.email) {
         payload.email = payload.email.toLowerCase();
+    }
+
+    if (isAdmin) {
+        const role = normalizeRole(body.role);
+        if (role) {
+            payload.role = role;
+        }
     }
 
     return payload;
@@ -107,6 +123,8 @@ exports.create = async (req, res, next) => {
         });
     }
 
+    const requestedRole = normalizeRole(req.body.role) || 'user';
+
     const temp = ({
         name: String(name).trim(),
         email: String(email).trim().toLowerCase(),
@@ -114,6 +132,24 @@ exports.create = async (req, res, next) => {
     });
 
     try {
+        const userCount = await User.countDocuments();
+        const adminCount = await User.countDocuments({ role: 'admin' });
+        const isAuthenticatedAdmin = req.auth && req.auth.role === 'admin';
+        const isAuthenticatedUser = Boolean(req.auth && req.auth.sub);
+
+        if (userCount === 0) {
+            // Bootstrap: le premier compte peut administrer la plateforme.
+            temp.role = 'admin';
+        } else if (requestedRole === 'admin' && !(isAuthenticatedAdmin || (adminCount === 0 && isAuthenticatedUser))) {
+            return res.status(403).json({
+                status: 403,
+                error: 'forbidden',
+                message: 'Seul un administrateur peut creer un autre administrateur'
+            });
+        } else {
+            temp.role = requestedRole;
+        }
+
         let user = await User.create(temp);
 
         return res.status(201).json(sanitizeUser(user));
@@ -133,8 +169,18 @@ exports.update = async (req, res, next) => {
         });
     }
 
+    const isAuthenticatedAdmin = req.auth && req.auth.role === 'admin';
+
+    if (req.body.role !== undefined && !isAuthenticatedAdmin) {
+        return res.status(403).json({
+            status: 403,
+            error: 'forbidden',
+            message: 'Seul un administrateur peut modifier le role'
+        });
+    }
+
     // On n'accepte que les champs explicitement autorises.
-    const temp = getAllowedUpdatePayload(req.body);
+    const temp = getAllowedUpdatePayload(req.body, isAuthenticatedAdmin);
 
     if (!Object.keys(temp).length) {
         return res.status(400).json({

@@ -142,7 +142,7 @@
         container.innerHTML = users.map((user) => {
             return '<article class="entity-card">'
                 + '<header><h3>' + user.name + '</h3><code>' + user._id + '</code></header>'
-                + entityMeta([user.email, 'cree le ' + formatDate(user.createdAt)])
+                + entityMeta([user.email, 'role: ' + (user.role || 'user'), 'cree le ' + formatDate(user.createdAt)])
                 + '<div class="entity-actions">'
                 + '<button type="button" data-user-fill="' + user._id + '">Pre-remplir edition</button>'
                 + '<button type="button" class="danger-button" data-user-delete="' + user._id + '">Supprimer</button>'
@@ -296,7 +296,8 @@
                     body: JSON.stringify({
                         name: formData.get('name'),
                         email: formData.get('email'),
-                        password: formData.get('password')
+                        password: formData.get('password'),
+                        role: formData.get('role') || 'user'
                     })
                 });
                 createUserForm.reset();
@@ -312,7 +313,7 @@
             try {
                 const formData = new FormData(updateUserForm);
                 const payload = {};
-                ['name', 'email', 'password'].forEach((key) => {
+                ['name', 'email', 'password', 'role'].forEach((key) => {
                     const value = formData.get(key);
                     if (value) {
                         payload[key] = value;
@@ -341,6 +342,7 @@
                     updateUserForm.elements.name.value = user.name || '';
                     updateUserForm.elements.email.value = user.email || '';
                     updateUserForm.elements.password.value = '';
+                    updateUserForm.elements.role.value = '';
                     setMessage(globalMessage, 'Formulaire utilisateur pre-rempli.', true);
                 } catch (error) {
                     setMessage(globalMessage, error.message, false);

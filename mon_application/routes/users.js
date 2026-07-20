@@ -8,8 +8,9 @@ var router = express.Router();
 
 const service = require('../services/users');
 const auth = require('../middlewares/auth');
+const optionalAuth = require('../middlewares/optionalAuth');
 
-router.post('/', service.create);
+router.post('/', optionalAuth, service.create);
 
 // Les operations de lecture/modification/suppression exigent un token valide.
 router.use(auth);

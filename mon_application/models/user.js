@@ -20,20 +20,23 @@ const User = new Schema({
         type: String,
         trim: true,
         required: [true, 'Le mot de passe est requis']
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 }, { 
     timestamps: true 
 });
 
-User.pre('save', function(next) {
+User.pre('save', function() {
     // Le hash n'est recalcule que si le mot de passe a ete modifie.
     if (!this.isModified('password')) {
-        return next();
+        return;
     }
 
     this.password = bcrypt.hashSync(this.password, 10);
-
-    next();
 });
 
 module.exports = mongoose.model('User', User);
