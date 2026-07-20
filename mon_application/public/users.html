@@ -43,6 +43,12 @@
             <label>Nom<input name="name" type="text" required /></label>
             <label>Email<input name="email" type="email" required /></label>
             <label>Mot de passe<input name="password" type="password" required /></label>
+            <label>Role
+              <select name="role">
+                <option value="user" selected>Utilisateur</option>
+                <option value="admin">Administrateur</option>
+              </select>
+            </label>
             <button type="submit">Creer</button>
           </form>
           <form id="updateUserForm" class="panel form-stack">
@@ -51,6 +57,13 @@
             <label>Nom<input name="name" type="text" /></label>
             <label>Email<input name="email" type="email" /></label>
             <label>Mot de passe<input name="password" type="password" /></label>
+            <label>Role
+              <select name="role">
+                <option value="">Ne pas modifier</option>
+                <option value="user">Utilisateur</option>
+                <option value="admin">Administrateur</option>
+              </select>
+            </label>
             <button type="submit">Mettre a jour</button>
           </form>
         </div>

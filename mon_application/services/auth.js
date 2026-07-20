@@ -58,7 +58,8 @@ exports.login = async (req, res) => {
         const tokenPayload = {
             sub: user._id.toString(),
             email: user.email,
-            name: user.name
+            name: user.name,
+            role: user.role || 'user'
         };
 
         const signOptions = {
